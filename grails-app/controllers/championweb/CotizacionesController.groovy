@@ -1,0 +1,292 @@
+package championweb
+
+import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+
+import championweb.enums.EstatusPartida;
+
+import com.koomoni.bean.Proveedor;
+import com.koomoni.dto.filtro.ProveedoresFC
+import com.koomoni.ws.ProveedorService
+
+import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured;
+import wslite.soap.SOAPClient
+import grails.util.Environment
+
+@Secured(['ROLE_SOLICITUD_ASIGNAR_ORDEN','ROLE_ADMIN'])
+class CotizacionesController {
+	private static final log = LogFactory.getLog(this);
+	
+    def index() {
+		log.debug("COTIZACIONES...")
+		StringBuilder qry = new StringBuilder();
+		StringBuilder qcount = new StringBuilder();
+		
+		qry.append("SELECT sp.solicitud.id, sp.solicitud.contPorZona, ")
+			.append("sp.solicitud.usuarioCreo.zona.id, count(sp), sp.idSAE as prov, sp.solicitud.fechaCreacionSolicitud FROM SolicitudPartida sp ")
+			.append("WHERE sp.idSAE != null AND sp.estatus = 2 GROUP BY sp.idSAE, sp.solicitud.id ")
+			
+		qcount.append("SELECT count(*) ")
+			.append("FROM SolicitudPartida sp ")
+			.append("WHERE sp.idSAE != null AND sp.estatus = 2 GROUP BY sp.idSAE, sp.solicitud.id ")
+		
+		def cotPendientesList = SolicitudPartida.executeQuery(qry.toString(),[max: 10, offset: 0])
+		def cotPendientesTotal = SolicitudPartida.executeQuery(qcount.toString())
+		
+		log.debug(cotPendientesList)
+		
+		def cotizacionesList = CotizacionEnviada.listOrderByFechaEnvPrimeraVez([max: 10, offset: 0, order: "desc"])
+		def cotizacionesTotal = CotizacionEnviada.count()
+
+		[cotPendientesList:cotPendientesList,cotizacionesList:cotizacionesList,cotPendientesTotal:cotPendientesTotal[0],cotizacionesTotal:cotizacionesTotal]
+	}
+	
+	def searchPendientes(Integer max){
+		StringBuilder qry = new StringBuilder();
+		StringBuilder qcount = new StringBuilder();
+		
+		params.max = Math.min(max ?: 10, 100)
+		
+		qry.append("SELECT sp.solicitud.id, sp.solicitud.contPorZona, ")
+			.append("sp.solicitud.usuarioCreo.zona.id, count(sp), sp.idSAE as prov, sp.solicitud.fechaCreacionSolicitud FROM SolicitudPartida sp WHERE")
+			
+		qcount.append("SELECT count(*) ")
+			.append("FROM SolicitudPartida sp WHERE")
+		
+		if(params.pbuscar && params.pbuscar.length()>0){
+			
+			log.debug(params.pbuscar)
+			def folio = params.pbuscar.trim().split('-')
+			log.debug("folio ${folio} tamano ${folio.length}")
+			
+			if(folio.length>1){
+				log.debug(folio[0].isNumber())
+				log.debug(folio[1].isNumber())
+			}
+			
+			if( folio.length>1 && (folio[0].isNumber()&&folio[1].isNumber()) ){
+				qry.append(" ( sp.solicitud.contPorZona = ${folio[0]} AND sp.solicitud.usuarioCreo.zona.id = ${folio[1]}) AND")
+				qcount.append("( sp.solicitud.contPorZona = ${folio[0]} AND sp.solicitud.usuarioCreo.zona.id = ${folio[1]}) AND")
+			}
+				
+		}
+		
+		qry.append(" sp.idSAE != null AND sp.estatus = 2 GROUP BY sp.idSAE, sp.solicitud.id ")
+		qcount.append(" sp.idSAE != null AND sp.estatus = 2 GROUP BY sp.idSAE, sp.solicitud.id ")
+		
+		def cotPendientesList = SolicitudPartida.executeQuery(qry.toString(),[max: params.max, offset: params.offset?params.offset.toInteger():0 ])
+		def cotPendientesTotal = SolicitudPartida.executeQuery(qcount.toString())
+		
+		render template:'cotizacionesPendientesList', model:[cotPendientesList:cotPendientesList,cotPendientesTotal:cotPendientesTotal,pbuscar:params.pbuscar]
+	}
+	
+	def searchEnviadas(Integer max){
+		StringBuilder qry = new StringBuilder();
+		StringBuilder qcount = new StringBuilder();
+		def cotizacionesList
+		def cotizacionesTotal
+		
+		params.max = Math.min(max ?: 10, 100)
+		
+		if(params.pbuscarEnv && params.pbuscarEnv.length()>0){
+			
+			qry.append("FROM CotizacionEnviada AS ce join ce.partida as p WHERE ce.nombreProv like '%${params.pbuscarEnv}%'")
+			qcount.append("SELECT COUNT(ce.id) FROM CotizacionEnviada AS ce join ce.partida as p WHERE ce.nombreProv like '%${params.pbuscarEnv}%'")
+			def folio = params.pbuscarEnv.trim().split('-')
+			log.debug("folio ${folio} tamano ${folio.length}")
+			
+			if(folio.length>1){
+				log.debug(folio[0].isNumber())
+				log.debug(folio[1].isNumber())
+			}
+			
+			if( folio.length>1 && (folio[0].isNumber()&&folio[1].isNumber()) ){
+				qry.append(" OR p.solicitud.contPorZona = ${folio[0].trim()} AND p.solicitud.usuarioCreo.zona.id = ${folio[1].trim()}")
+				qcount.append(" OR ( p.solicitud.contPorZona = ${folio[0].trim()} AND p.solicitud.usuarioCreo.zona.id = ${folio[1].trim()})")
+			}
+			
+			 qry.append(" ORDER BY ce.fechaEnvPrimeraVez desc GROUP BY ce.id")
+			 qcount.append(" GROUP BY ce.id")
+			
+			 cotizacionesList = CotizacionEnviada.findAll(qry.toString(),[max: params.max, offset: params.offset?params.offset.toInteger():0 ])
+			 cotizacionesTotal = CotizacionEnviada.executeQuery(qcount.toString())[0]
+			 ArrayList listCot = new ArrayList<CotizacionEnviada>()
+			 cotizacionesList.each{listCot.add(it[0])}
+			 
+			 render template:'cotizacionesEnviadasList',model:[cotizacionesList:listCot,cotizacionesTotal:cotizacionesTotal,pbuscarEnv:params.pbuscarEnv]
+		}else{
+			 cotizacionesList = CotizacionEnviada.listOrderByFechaEnvPrimeraVez([max: params.max, offset: params.offset?params.offset.toInteger():0, order: "desc"])
+			 cotizacionesTotal = CotizacionEnviada.count()
+			 render template:'cotizacionesEnviadasList',model:[cotizacionesList:cotizacionesList,cotizacionesTotal:cotizacionesTotal,pbuscarEnv:params.pbuscarEnv]
+		}
+	}
+	
+	def detalle(){
+		log.debug(params)
+		def partidas = SolicitudPartida.findAll("FROM SolicitudPartida WHERE solicitud.id = :id AND idSAE = :prov AND estatus = 2",[id:params.id.toLong(), prov:params.prov.toLong()])
+		log.debug(partidas)
+		Proveedor proveedor = getProveedorWS(params.prov.toInteger())
+		def msg = ConfGeneral.findByName("ES_MSG")
+		render view:'cotizacion',model:[partidas:partidas,proveedor:proveedor, emailprov:getMailProveedorWS(params.prov.toInteger()),msg:msg,idsolicitud:params.id.toLong()]
+	}
+	
+	def cotizacionEnviada(){
+		log.debug(params)
+		def cotizacion = CotizacionEnviada.get(params.id)
+		Proveedor proveedor = getProveedorWS((Integer)cotizacion.provSAE)
+		def msg = ConfGeneral.findByName(cotizacion.idiomaCorreo=="es"?"ES_MSG":"EN_MSG")
+		render view:'cotizacionEnviada',model:[partidas:cotizacion.partida,proveedor:proveedor, emailprov:cotizacion.correoProv,
+											msg:msg,idsolicitud:cotizacion.partida.solicitud[0].id, observaciones:cotizacion.observaciones,idcotizacion:cotizacion.id]
+	}
+	
+	def getMensajeCorreo(){
+		log.debug(params)
+		
+		def msg = ConfGeneral.findByName(params.idioma=='en'?"EN_MSG":"ES_MSG")
+		
+		render msg.value
+	}
+	
+	def sendCotizacion(){
+		log.debug(params)
+		def cotEnviada = new CotizacionEnviada()
+		
+		def titulo = params.idioma == "es"?"Cotizaci&oacute;n":"Budget"
+		def msg = ConfGeneral.findByName(params.idioma=='en'?"EN_MSG":"ES_MSG")
+		def partidas = SolicitudPartida.findAll("FROM SolicitudPartida WHERE solicitud.id = :id AND idSAE = :prov AND estatus = 2",
+													[id:params.idsolicitud.toLong(), prov:params.provclave.trim().toLong()])
+		
+		cotEnviada.partida = partidas
+		cotEnviada.provSAE = params.provclave.trim().toLong()
+		cotEnviada.correoProv = params.provmail
+		cotEnviada.nombreProv = params.provnombre
+		cotEnviada.idiomaCorreo = params.idioma
+		cotEnviada.observaciones = params.observaciones
+		cotEnviada.fechaEnvPrimeraVez = new Date()
+		cotEnviada.vecesEnviado = 1
+		
+		if(!cotEnviada.save(flush:true))
+			log.error(cotEnviada.errors)
+		else{
+			def mailProveedor
+			if (ConfGeneral.findByName("pruebas").value=='yes')
+				mailProveedor=ConfGeneral.findByName("mail_pruebas").value
+			else
+				mailProveedor=params.provmail
+				
+			if (Environment.current == Environment.PRODUCTION) {
+				log.debug "enviando correo a: ${mailProveedor} con los datos...."
+				sendMail {
+					to mailProveedor
+					cc ConfGeneral.findByName("mail_foranea").value
+					subject  params.idioma == "es"?"Cotizaci\u00f3n":"Budget"
+					body (view:"/layouts/correoCotizacion",
+						 model:[correoTitulo:titulo,
+								 mensajeCorreo:msg.value,
+								 productos:partidas,
+								 observaciones:params.observaciones])
+				 }
+			}
+			
+			if (Environment.current == Environment.DEVELOPMENT) {
+				log.debug "enviando correo a: ${ConfGeneral.findByName("mail_foranea").value} con los datos...."
+				sendMail {
+					to "jesus.alfredo.vazquez.cervin@gmail.com"
+					//cc ConfGeneral.findByName("mail_foranea").value
+					subject  params.idioma == "es"?"Cotizaci\u00f3n":"Budget"
+					body (view:"/layouts/correoCotizacion",
+						 model:[correoTitulo:titulo,
+								 mensajeCorreo:msg.value,
+								 productos:partidas,
+								 observaciones:params.observaciones])
+				 }
+			}
+			
+		}	
+			
+		partidas.each{
+			it.estatus = EstatusPartida.COTIZACION_ENVIADA
+			
+			if(!it.save(flush:true))
+				log.error(it.errors)
+					
+		}
+		
+		redirect action:'index'
+	}
+	
+	def reSendCotizacion(){
+		log.debug(params)
+		def cotEnviada = CotizacionEnviada.get(params.idcotizacion)
+		
+		def titulo = params.idioma == "es"?"Cotizaci&oacute;n":"Budget"
+		def msg = ConfGeneral.findByName(params.idioma=='en'?"EN_MSG":"ES_MSG")
+		def partidas = SolicitudPartida.findAll("FROM SolicitudPartida WHERE solicitud.id = :id AND idSAE = :prov AND estatus = :estatus",
+			[id:params.idsolicitud.toLong(), prov:params.provclave.trim().toLong(), estatus:EstatusPartida.COTIZACION_ENVIADA])
+
+		cotEnviada.provSAE = params.provclave.trim().toLong()
+		cotEnviada.correoProv = params.provmail
+		cotEnviada.nombreProv = params.provnombre
+		cotEnviada.idiomaCorreo = params.idioma
+		cotEnviada.observaciones = params.observaciones
+		cotEnviada.vecesEnviado += 1
+		
+		if(!cotEnviada.save(flush:true))
+			log.error(cotEnviada.errors)
+		else{
+			def mailProveedor
+			if (ConfGeneral.findByName("pruebas").value=='yes')
+				mailProveedor=ConfGeneral.findByName("mail_pruebas").value
+			else
+				mailProveedor=params.provmail
+				
+			log.debug "enviando correo a: ${mailProveedor} con los datos...."
+			sendMail {
+				to mailProveedor				
+				cc ConfGeneral.findByName("mail_foranea").value
+				subject  params.idioma == "es"?"Cotizaci\u00f3n":"Budget"
+				body (view:"/layouts/correoCotizacion",
+					 model:[correoTitulo:titulo,
+							 mensajeCorreo:msg.value,
+							 productos:partidas,
+							 observaciones:params.observaciones])
+			 }
+		}
+			
+		redirect action:'index'
+	}
+	
+	public com.koomoni.bean.Proveedor getProveedorWS(Integer idprov){
+		log.debug("Llamando al ws...")
+		
+		def client = new SOAPClient(grailsApplication.config.ws.proveedor)
+		def sProveedor = new ProveedorService()
+		def filtro = new ProveedoresFC()
+		def dto = new com.koomoni.bean.Proveedor()
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		dto = sProveedor.consultaProveedor(idprov, client)
+		
+		return dto
+	}
+	
+	public String getMailProveedorWS(Integer idprov){
+		log.debug("Llamando al ws...")
+		
+		def client = new SOAPClient(grailsApplication.config.ws.proveedor)
+		def sProveedor = new ProveedorService()
+		def filtro = new ProveedoresFC()
+		def dto 
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		dto = sProveedor.consultaMailProveedor(idprov, client)
+		
+		return dto
+	}
+	
+}

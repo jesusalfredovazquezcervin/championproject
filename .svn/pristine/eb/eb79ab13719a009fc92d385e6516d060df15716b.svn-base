@@ -1,0 +1,23 @@
+package championweb
+
+import grails.plugin.springsecurity.annotation.Secured;
+import org.apache.commons.logging.LogFactory;
+
+
+@Secured(['ROLE_ALMACENES_RELACIONAR','ROLE_ADMIN'])
+class RecepcionController {
+	
+	private static final log = LogFactory.getLog(this);
+
+
+    def index(){redirect action:'list'}
+	
+	def list(Integer max){
+		params.max = Math.min(max ?: 10, 100)
+		
+		def rececepcionList = Recepcion.findAll();
+		[rececepcionList:rececepcionList]
+	}
+	
+	
+}

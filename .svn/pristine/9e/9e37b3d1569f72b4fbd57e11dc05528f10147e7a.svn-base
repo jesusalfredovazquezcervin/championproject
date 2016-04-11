@@ -1,0 +1,236 @@
+default.doesnt.match.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no corresponde al patrón [{3}]
+default.invalid.url.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no es una URL válida
+default.invalid.creditCard.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no es un número de tarjeta de crédito válida
+default.invalid.email.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no es una dirección de correo electrónico válida
+default.invalid.range.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no entra en el rango válido de [{3}] a [{4}]
+default.invalid.size.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no entra en el tamaño válido de [{3}] a [{4}]
+default.invalid.max.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] excede el valor máximo [{3}]
+default.invalid.min.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] es menos que el valor mínimo [{3}]
+default.invalid.max.size.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] excede el tamaño máximo de [{3}]
+default.invalid.min.size.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] es menor que el tamaño mínimo de [{3}]
+default.invalid.validator.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no es válido
+default.not.inlist.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no esta contenido dentro de la lista [{3}]
+default.blank.message=La propiedad [{0}] de la clase [{1}] no puede ser vacía
+default.not.equal.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] no puede igualar a [{3}]
+default.null.message=La propiedad [{0}] de la clase [{1}] no puede ser nulo
+#default.not.unique.message=La propiedad [{0}] de la clase [{1}] con valor [{2}] debe ser única
+default.not.unique.message=El campo [{0}] con valor [{2}] ya existe en la base de datos.
+
+default.paginate.prev=Anterior
+default.paginate.next=Siguiente
+default.boolean.true=Verdadero
+default.boolean.false=Falso
+default.date.format=yyyy-MM-dd HH:mm:ss z
+default.number.format=0
+
+default.created.message={0} {1} creado
+default.updated.message={0} {1} actualizado
+default.deleted.message={0} {1} eliminado
+default.not.deleted.message={0} {1} no puede eliminarse
+default.not.found.message=No se encuentra {0} con id {1}
+default.optimistic.locking.failure=Mientras usted editaba, otro usuario ha actualizado su {0}
+
+default.home.label=Principal
+default.list.label={0} Lista
+default.add.label=Agregar {0}
+default.new.label=Nuevo {0}
+default.create.label=Crear {0}
+default.show.label=Mostrar {0}
+default.edit.label=Editar {0}
+
+default.button.create.label=Crear
+default.button.edit.label=Editar
+default.button.update.label=Actualizar
+default.button.delete.label=Eliminar
+default.button.delete.confirm.message=¿Está usted seguro?
+
+# Data binding errors. Use "typeMismatch.$className.$propertyName to customize (eg typeMismatch.Book.author)
+typeMismatch.java.net.URL=La propiedad {0} debe ser una URL válida
+typeMismatch.java.net.URI=La propiedad {0} debe ser una URI válida
+typeMismatch.java.util.Date=La propiedad {0} debe ser una fecha válida
+typeMismatch.java.lang.Double=La propiedad {0} debe ser un número válido
+typeMismatch.java.lang.Integer=La propiedad {0} debe ser un número válido
+typeMismatch.java.lang.Long=La propiedad {0} debe ser un número válido
+typeMismatch.java.lang.Short=La propiedad {0} debe ser un número válido
+typeMismatch.java.math.BigDecimal=La propiedad {0} debe ser un número válido
+typeMismatch.java.math.BigInteger=La propiedad {0} debe ser un número válido
+
+#CHAMPION
+perfil.list.title=Lista de Perfiles
+perfil.descripcion.label=Descripción de Perfil
+perfil.nombrePerfil.label=Nombre
+perfil.success.save=Perfil [{0}] guardado correctamente
+perfil.success.update=Perfil actualizado
+perfil.create.title=Nuevo Perfil
+
+#Usuario
+usuario.success.save=Usuario guardado correctamente
+usuario.success.update=Usuario [{0}] actualizado 
+usuario.create.title=Nuevo Usuario
+usuario.list.title=Lista de Usuarios
+usuario.updated.message= Usuario actualizado correctamente
+usuario.deleted.message= Usuario eliminado correctamente
+
+
+
+receptor.list.title=Lista de Receptores
+receptor.create.title=Nuevo Receptor
+receptor.descripcion.label=Descripción
+receptor.nombrePerfil.label=Nombre
+receptor.success.update=Receptor Actualizado
+receptor.nombres.label=Nombre
+receptor.apellidoP.label=Apellido Paterno
+receptor.apellidoM.label=Apellido Materno
+receptor.idNextel.label=ID Nextel
+receptor.observaciones.label=Observaciones
+receptor.telMovil.label=Tel. Móvil
+receptor.telOficina.label=Tel. Oficina
+receptor.telNextel.label=Tel. Nextel
+receptor.deleted.message= Receptor Eliminado
+receptor.created.message= Receptor Creado 
+
+
+responsable.list.title=Lista de Responsables
+responsable.create.title=Nuevo Responsable
+responsable.create.success=Responsable [{0}] Creado
+responsable.descripcion.label=Descripción
+responsable.nombrePerfil.label=Nombre
+responsable.success.update=Registro actualizado
+responsable.nombres.label=Nombre
+responsable.apellidoP.label=Apellido Paterno
+responsable.apellidoM.label=Apellido Materno
+responsable.idNextel.label=ID Nextel
+responsable.observaciones.label=Observaciones
+responsable.telMovil.label=Tel. Móvil
+responsable.zona.label=Zona 
+responsable.telNextel.label= Tel. Nextel
+responsable.telOficina.label= Tel. Oficina
+responsable.updated.message= Responsable Actualizado
+responsables.deleted.message= Responsable Eliminado
+
+#Zona
+zona.list.title=Lista de Zonas
+zona.create.title=Nueva Zona
+zona.create.success=Zona [{0}] Creada
+zona.descripcion.label=Descripción
+zona.deleted.message= Zona Eliminada
+zona.updated.message= Zona Modificada
+
+
+almacen.relacion.list=Relacionar Almacén->Zona
+almacen.label=Nombre de Almacén
+almacen.zona.label=Zona
+almacen.clave.label=Clave de Almacén
+almacen.relacionar.label=Relacionar
+
+#Contrato
+contrato.list.title=Lista de Contratos
+contrato.create.title=Nuevo contrato
+contrato.created.message= Contrato Creado
+contrato.updated.message= Contrato Actualizado
+contrato.deleted.message= Contrato Eliminado
+contrato.list.label= Lista de contratos
+contrato.add.extension=Agregar extensión
+contrato.numContrato.label=Número de contrato
+contrato.nombreCliente.label=Cliente
+contrato.extension.label=Extensiones al contrato
+contrato.lugarAplicacion.label=Lugar de aplicación
+contrato.objetoContrato.label=Objeto del contrato
+contrato.periodo.label=Período del contrato
+contrato.responsableObs.label=Responsable de observación
+contrato.fechaObs.label=Fecha de observación
+contrato.observacion.fieldset=Observación 
+contrato.list.label=Lista de Contratos
+contrato.observaciones.title=Observaciones del contrato
+contrato.datos.title=Datos del contrato
+contrato.new.label=Nuevo contrato
+
+#Proyecto
+proyecto.list.title= Lista de Proyectos
+proyecto.create.title=Nuevo Proyecto
+proyecto.nombre.label=Nombre
+proyecto.tipoProyecto.label=Tipo de Proyecto
+proyecto.descripcion.label=Descripción
+proyecto.almacen.label=Almacén
+proyecto.responsable.label=Responsable
+proyecto.zona.label=Zona
+proyecto.created.message= Proyecto Creado
+proyecto.deleted.message= Proyecto Eliminado
+proyecto.updated.message= Proyecto Actualizado
+proyecto.list.label= Lista de proyectos
+proyecto.new.label= Nuevo Proyecto
+
+
+default.bad.user=Usuario incorrecto
+default.logout.user=Se ha cerrado la sesión
+
+
+#extContrato (Extensión )
+extContrato.list.label= Lista de Extensiones
+extContrato.link.skip.label= Crear Extensión
+extContrato.new.label= Agregar Extensión
+extContrato.create.label= Agregar Extensión
+extContrato.modal.header=Extensión
+extContrato.created.message= Extensión creada correctamente
+extContrato.deleted.message= Extensión eliminada correctamente
+extContrato.updated.message= Extensión actualizada correctamente
+extContrato.show.label= Mostrar Extensión
+extContrato.list.label=Lista de Extensiones
+extContrato.new.label= Nueva Extensión
+extContrato.edit.label= Editar Extensión
+
+#recoveryLink
+recoveryLink.public.label=Recuperación de contraseña
+recoveryLink.public.button=Recuperar
+recoveryLink.user.notfound=El usuario {0} no existe, contacte al área de soporte.
+recoveryLink.user.email.notfound=El usuario {0} no tiene un correo asignado, contacte al área de soporte.
+	
+#Obervaciones de Contratos
+observacionesContrato.list.label= Lista de Observaciones de Contrato
+observacionesContrato.new.label= Nueva Observación
+observacionesContrato.observacion.label= Observación de Contrato
+observacionesContrato.create.label=Crear Observaciones de Contrato
+observacionesContrato.show.label=Mostrar Observación de Contrato
+observacionesContrato.deleted.message= Observación Eliminada
+observacionesContrato.updated.message= Observación Actualizada
+observacionesContrato.updated.message.created.message= Observación guardada correctamente
+observacionesContrato.edit.label= Editar Observación de Contrato
+observacionesContrato.accordion.label=Observación de {0} del día:
+observacionesContrato.form.add=Agregar observación
+
+
+#Solicitud
+solicitud.label.long=Solicitud de materiales e insumos
+solicitud.label=Solicitud
+solicitud.new.label=Crear solicitud
+solicitud.list.label=Lista de solicitudes
+solicitud.fieldset.general.label=Información general
+solicitud.fecha.solicita=Fecha de solicitud al área administrativa
+solicitud.fecha.creacion=Fecha de solicitud
+solicitud.contrato.label=No. Contrato
+solicitud.proyecto.label=Proyecto(s)
+solicitud.lugarEntrega.label=Lugar de entrega
+solicitud.recibe.label=Nombre de quien recibe
+solicitud.programas.label=Agregar programa de trabajo
+solicitud.programas.ver.label=Ver programa de trabajo
+solicitud.stock.label=Búsqueda de stock en almacenes
+solicitud.stock.edit.label=Listado en stock
+solicitud.tipo.label=Tipo de solicitud
+solicitud.status.label=Estatus
+solicitud.prod.th.cve=Clave
+solicitud.prod.th.desc=Descripción
+solicitud.prod.th.cantidad=Cantidad
+solicitud.proyecto.modal.header=Proyectos de la solicitud
+solicitud.proyecto.add.error=No se puede asociar el proyecto
+solicitud.contrato.modal.header=Buscar Contrato
+solicitud.almacen.modal.header=Almacenes
+solicitud.receptor.modal.header=Persona quien recibe
+solicitud.programa.modal.header=Programa de trabajo
+solicitud.clasificar.label=Clasificación de productos
+solicitud.cotizacion.label=Cotizaciones
+solicitud.cotizaciones.enviada.label=Cotizaciones enviadas
+solicitud.cotizaciones.list.label=Lista de cotizaciones
+
+#Recepcion
+recepcion.new.label=Crear recepcion
+recepcion.list.label=Lista de recepciones

@@ -1,0 +1,159 @@
+package championweb
+
+
+
+import org.junit.*
+import grails.test.mixin.*
+
+@TestFor(ReceptorController)
+@Mock(Receptor)
+class ReceptorControllerTests {
+
+
+    def populateValidParams(params) {
+      assert params != null
+      // TODO: Populate valid properties like...
+      //params["name"] = 'someValidName'
+    }
+
+    void testIndex() {
+        controller.index()
+        assert "/receptor/list" == response.redirectedUrl
+    }
+
+    void testList() {
+
+        def model = controller.list()
+
+        assert model.receptorInstanceList.size() == 0
+        assert model.receptorInstanceTotal == 0
+    }
+
+    void testCreate() {
+       def model = controller.create()
+
+       assert model.receptorInstance != null
+    }
+
+    void testSave() {
+        controller.save()
+
+        assert model.receptorInstance != null
+        assert view == '/receptor/create'
+
+        response.reset()
+
+        populateValidParams(params)
+        controller.save()
+
+        assert response.redirectedUrl == '/receptor/show/1'
+        assert controller.flash.message != null
+        assert Receptor.count() == 1
+    }
+
+    void testShow() {
+        controller.show()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/receptor/list'
+
+
+        populateValidParams(params)
+        def receptor = new Receptor(params)
+
+        assert receptor.save() != null
+
+        params.id = receptor.id
+
+        def model = controller.show()
+
+        assert model.receptorInstance == receptor
+    }
+
+    void testEdit() {
+        controller.edit()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/receptor/list'
+
+
+        populateValidParams(params)
+        def receptor = new Receptor(params)
+
+        assert receptor.save() != null
+
+        params.id = receptor.id
+
+        def model = controller.edit()
+
+        assert model.receptorInstance == receptor
+    }
+
+    void testUpdate() {
+        controller.update()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/receptor/list'
+
+        response.reset()
+
+
+        populateValidParams(params)
+        def receptor = new Receptor(params)
+
+        assert receptor.save() != null
+
+        // test invalid parameters in update
+        params.id = receptor.id
+        //TODO: add invalid values to params object
+
+        controller.update()
+
+        assert view == "/receptor/edit"
+        assert model.receptorInstance != null
+
+        receptor.clearErrors()
+
+        populateValidParams(params)
+        controller.update()
+
+        assert response.redirectedUrl == "/receptor/show/$receptor.id"
+        assert flash.message != null
+
+        //test outdated version number
+        response.reset()
+        receptor.clearErrors()
+
+        populateValidParams(params)
+        params.id = receptor.id
+        params.version = -1
+        controller.update()
+
+        assert view == "/receptor/edit"
+        assert model.receptorInstance != null
+        assert model.receptorInstance.errors.getFieldError('version')
+        assert flash.message != null
+    }
+
+    void testDelete() {
+        controller.delete()
+        assert flash.message != null
+        assert response.redirectedUrl == '/receptor/list'
+
+        response.reset()
+
+        populateValidParams(params)
+        def receptor = new Receptor(params)
+
+        assert receptor.save() != null
+        assert Receptor.count() == 1
+
+        params.id = receptor.id
+
+        controller.delete()
+
+        assert Receptor.count() == 0
+        assert Receptor.get(receptor.id) == null
+        assert response.redirectedUrl == '/receptor/list'
+    }
+}

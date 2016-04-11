@@ -1,0 +1,60 @@
+dataSource {
+    pooled = true
+	driverClassName = "com.mysql.jdbc.Driver"
+	dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
+}
+hibernate {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = true
+    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
+}
+// environment specific settings
+environments {
+    development { 
+        dataSource {
+            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+//			url = "jdbc:mysql://127.0.0.1/dev_ctmwebapp?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+			url = "jdbc:mysql://127.0.0.1/ChampionDB?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+			username = "root"
+			password = ""
+        }
+		hibernate {
+			show_sql = true
+		}
+    }
+    test {
+        dataSource {
+           dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+			url = "jdbc:mysql://127.0.0.1/dev_ctmwebapp?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+			username = "root"
+			password = ""
+        }
+    }
+    production {
+        dataSource {
+            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+			url = "jdbc:mysql://localhost/ChampionDB?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+//			username = "champuser"
+//			password = "champassword021dev"
+			username = "root"
+			password = "new_root"
+            pooled = true
+            properties {
+               maxActive = 50
+			   maxIdle = 25
+        	   minIdle = 5
+			   maxWait = 10000
+               minEvictableIdleTimeMillis = 60000
+			   timeBetweenEvictionRunsMillis = 60000
+               numTestsPerEvictionRun=3
+               testOnBorrow=true
+               testWhileIdle=true
+               testOnReturn=true
+               validationQuery="SELECT 1"
+            }
+        }
+		hibernate {
+			show_sql = true
+		}
+    }
+}

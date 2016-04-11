@@ -1,0 +1,132 @@
+<script>
+  $(function() {
+    $( document ).tooltip({
+	  show: {
+	    effect: "fast"
+	  },
+      position: {
+        my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+    });
+  });
+  </script>
+  <style>
+  .ui-tooltip, .arrow:after {
+    background: #E6E6E6;
+    border: 2px solid white;
+  }
+  .ui-tooltip {
+    padding: 10px 20px;
+    color: #D07736;
+    font: bold 12px Roboto,"Helvetica Neue", Sans-Serif;
+    text-transform: uppercase;
+    box-shadow: 0 0 7px #999;
+  }
+  .arrow {
+    width: 70px;
+    height: 16px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    bottom: -16px;
+  }
+  .arrow.top {
+    top: -16px;
+    bottom: auto;
+  }
+  .arrow.left {
+    left: 20%;
+  }
+  .arrow:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    width: 25px;
+    height: 25px;
+    box-shadow: 6px 5px 9px -9px black;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    tranform: rotate(45deg);
+  }
+  .arrow.top:after {
+    bottom: -20px;
+    top: auto;
+  }
+  </style>
+
+<g:message code="${flash.message}" args="${flash.args}"
+           default="${flash.default}"/>
+<fieldset id="fs02">
+	<legend>PARTIDAS</legend>
+	${flash.message}
+	<table style="font-size: 90%;">
+		<thead>
+			<tr>
+				<th>Cant.</th>
+				<th>Almacén</th>
+				<th>Producto</th>
+				<th>Unidad</th>
+				<th>Descuento</th>
+				<th>Otros</th>
+				<th>ISR Ret.</th>
+				<th>Ret. I.V.A.</th>
+				<th>Costo por unidad</th>
+				<th>Total por partida</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<g:each in="${ordenInstance.partidas?.sort{a,b->a.cveProducto<=>b.cveProducto}}" status="i" var="partida">
+				<tr>
+					<td><g:field type="text" name="cantidad_${partida.id}" onKeyUp="recalcularTotal(${partida.id})" size="5" value="${partida.cantidad}"/></td>
+					<td>${partida.almacen?.descripcion}</td>
+					<td title="${partida.descProducto}">${partida.cveProducto}</td>
+					<td>${partida.unidad}</td>
+					<td>0.0</td>
+					<td>0.0</td>
+					<td>0.0</td>
+					<td>0.0</td>
+					<td><g:field type="text" name="costounit${partida.id}" size="5" value="${partida.costoUnidad}" onKeyUp="recalcularTotal(${partida.id})"/></td>
+					<td><label id="total_partida${partida.id}"><g:formatNumber number="0.0" type="number" minFractionDigits="6" /></label></td>
+					<td><span onclick='deletePartidaOrden(${partida.id});' class='ui-icon ui-icon-closethick'></span></td>
+				</tr>
+			</g:each>
+		</tbody>
+	</table>
+</fieldset>
+
+
+<script>
+function deletePartidaOrden(idPartida){
+	${remoteFunction(action:'deletePartida', 
+		controller:'orden',
+		params:'\'id=\'+idPartida',
+		update:'listado-partidas'
+	)}
+}
+
+function recalcularTotal(id){
+	console.debug($("#costounit"+id).val());
+	console.debug($("#cantidad_"+id).val());
+
+	//AQUI LA LLAMADA DE UPDATE
+	${remoteFunction(action:'updatePartida',
+		controller:'orden',
+		params:'\'id=\'+id+\'&costounidad=\'+$(\"#costounit\"+id).val()')}
+	
+	$("#total_partida"+id).text( ($("#costounit"+id).val() * $("#cantidad_"+id).val()).toFixed(6) );
+}
+</script>

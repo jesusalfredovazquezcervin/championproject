@@ -1,0 +1,200 @@
+package championweb
+
+import com.koomoni.dto.ProveedorDTO
+import com.koomoni.dto.ProveedoresDTO;
+import com.koomoni.dto.filtro.ProveedoresFC
+import com.koomoni.ws.ProveedorService
+
+import grails.converters.JSON
+import wslite.soap.SOAPClient
+
+import org.apache.commons.logging.LogFactory;
+
+class OrdenController {
+	private static final log = LogFactory.getLog(this);
+
+	def index() {
+		redirect(action: "list", params: params)
+	}
+	
+	def list(){
+		def ordenCompraInstanceList = OrdenCompra.list();
+		[ordenCompraInstanceList:ordenCompraInstanceList]
+	}
+	
+	def searchOrden(){
+		def ordenCompraInstanceList = OrdenCompra.findAllByOrdenSAELike("%${params.pbuscar}%");
+		render template:'remoteList', model:[ordenCompraInstanceList:ordenCompraInstanceList]
+	}
+	
+	def create(){}
+	
+	def generateFromCotizacion(){
+		log.debug(params)
+		def cotizacionEnviadaInstance = CotizacionEnviada.get(params.idCotizacion.toLong())
+		def ordenInstance = new OrdenCompra()
+		
+		
+		if(cotizacionEnviadaInstance){
+			
+			ordenInstance.fecha = new Date()
+			ordenInstance.almacen = cotizacionEnviadaInstance.partida.first().solicitud.lugarEntrega
+			ordenInstance.provSAE = cotizacionEnviadaInstance.provSAE
+			ordenInstance.solicitud = cotizacionEnviadaInstance.partida.first().solicitud
+			ordenInstance.servicio = "N/A"
+			ordenInstance.moneda = 1
+			
+			if(!ordenInstance.save(flush:true)){
+				log.debug("Error al intentar guardar la orden :: "+ordenInstance.errors)
+			}else{
+					log.debug("Se ha creado la cotizacion ${ordenInstance.id} ")
+					ArrayList<PartidaOrden> partidas = new ArrayList<PartidaOrden>()
+					def partidaOrden
+					cotizacionEnviadaInstance.partida.each {
+						partidaOrden = new PartidaOrden()
+						partidaOrden.orden = ordenInstance
+						partidaOrden.cantidad = 1
+						partidaOrden.almacen = ordenInstance.almacen
+						partidaOrden.cveProducto = it.cveProducto
+						partidaOrden.descProducto = it.descProducto
+						partidaOrden.unidad = it.unidad
+						
+						partidas.add(partidaOrden)
+					}
+					
+					ordenInstance.partidas = partidas
+					
+					if(!ordenInstance.save(flush:true)){
+						log.debug("Error al intentar guardar la orden :: "+ordenInstance.errors)
+					}
+					
+				log.debug("Se han guardado las partidas")
+			
+				redirect action: 'edit', params:[id:ordenInstance.id]
+			}
+			
+		}
+		
+	}
+	
+	def edit(){
+		log.debug(params)
+		
+		def ordenInstance = OrdenCompra.get(params.id)
+		def datosProveedor
+		
+		if(ordenInstance){
+			datosProveedor = getProveedorWS(ordenInstance.provSAE.toInteger())
+		}
+		
+		render view: 'edit', model:[ordenInstance:ordenInstance,datosProveedor:datosProveedor]
+	}
+	
+	
+	def deletePartida(){
+		log.debug(params)
+		
+		def partidaOrdenInstance = PartidaOrden.get(params.id)
+		def ordenInstance = OrdenCompra.get(partidaOrdenInstance.orden.id)
+		def cantPartidas = ordenInstance.partidas.size()
+
+		log.debug("Se intentara eliminar de la orden la partida: "+partidaOrdenInstance.id)
+		log.debug("Cantidad de partidas: "+cantPartidas)
+		
+		if(partidaOrdenInstance){
+			if(!partidaOrdenInstance.delete(flush:true))
+				log.error(partidaOrdenInstance.errors)
+		}else{
+				log.error("NO SE PUDO ELIMINAR POR QUE ES LA UNICA")
+				flash.message = "Imposible eliminar la partida"
+			}
+		
+		render template: 'partidas', model:[ordenInstance:ordenInstance]
+	}
+	
+	def getProveedor(){
+		log.debug("BUSCANDO PROVEEDORES")
+		def client = new SOAPClient(grailsApplication.config.ws.proveedor)
+		def sProveedor = new ProveedorService()
+		def filtro = new ProveedoresFC()
+		def dto = new ProveedoresDTO()
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		filtro.setClave(params.claveP!=null?params.claveP:"")
+		filtro.setNombre(params.nombreP!=null?params.nombreP:"")
+		filtro.setRfc(params.rfcP!=null?params.rfcP:"")
+		filtro.setCurrPage(params.pageP!=null?params.pageP.toInteger():0)
+		
+		dto = sProveedor.searchProveedor(filtro, client);
+		
+		render(view:"remote_proveedores", model:[proveedores:dto])
+	}
+	
+	/**
+	 * Regresa los datos como JSON
+	 * @return
+	 */
+	def consultaProveedor(){
+		def sProveedor = new ProveedorService()
+		def client = new SOAPClient(grailsApplication.config.ws.proveedor)
+		com.koomoni.bean.Proveedor proveedor = new com.koomoni.bean.Proveedor();
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		if(params.idp){
+			proveedor = sProveedor.consultaProveedor(params.idp.toInteger(), client)
+		}
+		
+		render proveedor as JSON
+	}
+	
+	/**
+	 * Regresa los datos en un DTO
+	 * @param idprov
+	 * @return
+	 */
+	private com.koomoni.bean.Proveedor getProveedorWS(Integer idprov){
+		log.debug("Llamando al ws...")
+		
+		def client = new SOAPClient(grailsApplication.config.ws.proveedor)
+		def sProveedor = new ProveedorService()
+		def filtro = new ProveedoresFC()
+		def dto = new com.koomoni.bean.Proveedor()
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		dto = sProveedor.consultaProveedor(idprov, client)
+		
+		return dto
+	}
+	
+	/**
+	 *
+	 * Actualiza valores de cantidades y costos solamente
+	 * @return
+	 */
+	def updatePartida(){
+		log.debug(params)
+		
+		def partidaOrdenInstance = PartidaOrden.get(params.id)
+		
+		if(partidaOrdenInstance){
+			log.debug("Guardando cambios en la partida ${partidaOrdenInstance.id}")
+			partidaOrdenInstance.costoUnidad = params.costounidad?params.costounidad.toBigDecimal():0
+			partidaOrdenInstance.cantidad = params.cantidad?:1
+			
+			if(!partidaOrdenInstance.save(flush:true))
+				log.error("Error al guardar los cambios: ${partidaOrdenInstance.errors}")
+			
+		}
+		
+		render "OK"
+	}
+	
+}
+
+

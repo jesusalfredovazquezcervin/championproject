@@ -1,0 +1,159 @@
+package championweb
+
+
+
+import org.junit.*
+import grails.test.mixin.*
+
+@TestFor(ResponsableController)
+@Mock(Responsable)
+class ResponsableControllerTests {
+
+
+    def populateValidParams(params) {
+      assert params != null
+      // TODO: Populate valid properties like...
+      //params["name"] = 'someValidName'
+    }
+
+    void testIndex() {
+        controller.index()
+        assert "/responsable/list" == response.redirectedUrl
+    }
+
+    void testList() {
+
+        def model = controller.list()
+
+        assert model.responsableInstanceList.size() == 0
+        assert model.responsableInstanceTotal == 0
+    }
+
+    void testCreate() {
+       def model = controller.create()
+
+       assert model.responsableInstance != null
+    }
+
+    void testSave() {
+        controller.save()
+
+        assert model.responsableInstance != null
+        assert view == '/responsable/create'
+
+        response.reset()
+
+        populateValidParams(params)
+        controller.save()
+
+        assert response.redirectedUrl == '/responsable/show/1'
+        assert controller.flash.message != null
+        assert Responsable.count() == 1
+    }
+
+    void testShow() {
+        controller.show()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/responsable/list'
+
+
+        populateValidParams(params)
+        def responsable = new Responsable(params)
+
+        assert responsable.save() != null
+
+        params.id = responsable.id
+
+        def model = controller.show()
+
+        assert model.responsableInstance == responsable
+    }
+
+    void testEdit() {
+        controller.edit()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/responsable/list'
+
+
+        populateValidParams(params)
+        def responsable = new Responsable(params)
+
+        assert responsable.save() != null
+
+        params.id = responsable.id
+
+        def model = controller.edit()
+
+        assert model.responsableInstance == responsable
+    }
+
+    void testUpdate() {
+        controller.update()
+
+        assert flash.message != null
+        assert response.redirectedUrl == '/responsable/list'
+
+        response.reset()
+
+
+        populateValidParams(params)
+        def responsable = new Responsable(params)
+
+        assert responsable.save() != null
+
+        // test invalid parameters in update
+        params.id = responsable.id
+        //TODO: add invalid values to params object
+
+        controller.update()
+
+        assert view == "/responsable/edit"
+        assert model.responsableInstance != null
+
+        responsable.clearErrors()
+
+        populateValidParams(params)
+        controller.update()
+
+        assert response.redirectedUrl == "/responsable/show/$responsable.id"
+        assert flash.message != null
+
+        //test outdated version number
+        response.reset()
+        responsable.clearErrors()
+
+        populateValidParams(params)
+        params.id = responsable.id
+        params.version = -1
+        controller.update()
+
+        assert view == "/responsable/edit"
+        assert model.responsableInstance != null
+        assert model.responsableInstance.errors.getFieldError('version')
+        assert flash.message != null
+    }
+
+    void testDelete() {
+        controller.delete()
+        assert flash.message != null
+        assert response.redirectedUrl == '/responsable/list'
+
+        response.reset()
+
+        populateValidParams(params)
+        def responsable = new Responsable(params)
+
+        assert responsable.save() != null
+        assert Responsable.count() == 1
+
+        params.id = responsable.id
+
+        controller.delete()
+
+        assert Responsable.count() == 0
+        assert Responsable.get(responsable.id) == null
+        assert response.redirectedUrl == '/responsable/list'
+    }
+}
