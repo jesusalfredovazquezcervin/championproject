@@ -696,7 +696,23 @@ class SolicitudController {
 			partidaInstance.cantidad = 0
 		}
 		
-		partidaInstance.descProducto = params.desc
+		def client = new SOAPClient(grailsApplication.config.ws.producto)
+		def sProducto = new ProductosService();
+		def filtro = new ProductoFC();
+		def prodDTO = new ProductosDTO();
+		
+		client.httpClient.sslTrustStoreFile = grailsApplication.config.sec.sslTrustStoreFile
+		client.httpClient.sslTrustStorePassword = grailsApplication.config.sec.sslTrustStorePassword
+		
+		//obteniendo datos del post
+		filtro.setClave(params.claveProducto!=null?params.claveProducto:"");
+		
+		
+		prodDTO = sProducto.searchProductos(client, filtro)
+		prodDTO.productos.each {p->
+			partidaInstance.descProducto = p.descripcion
+		}
+		
 		partidaInstance.unidad = params.medida.toString().toUpperCase();
 		
 		if(!partidaInstance.save(flush:true)){

@@ -16,7 +16,8 @@
 	         <td>${productoInstance.uni_med.toUpperCase()}</td>
 	         <td>
 	         	
-	         	<g:remoteLink action="addTmpPartida" controller="solicitud" update="partidasList" params="[tmpProyectoID:params.idSolicitudTMP,claveProducto:productoInstance.clave, desc:productoInstance.descripcion, medida:productoInstance.uni_med]">
+	         	<g:remoteLink action="addTmpPartida" controller="solicitud" update="partidasList" 
+	         	params="[tmpProyectoID:params.idSolicitudTMP,claveProducto:productoInstance.clave, medida:productoInstance.uni_med]">
 	         	<span class="ui-icon ui-icon-circle-plus"></span> 
 	         	</g:remoteLink> 
 	         	
