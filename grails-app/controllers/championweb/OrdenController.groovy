@@ -5,11 +5,14 @@
 //Solo resta crear dentro de este proyecto un servicio que arme la info para enviarla al WS 
 package championweb
 
+import java.math.BigDecimal;
+
 import com.koomoni.dto.ProveedorDTO
 import com.koomoni.dto.ProveedoresDTO;
 import com.koomoni.dto.filtro.ProveedoresFC
 import com.koomoni.ws.ProveedorService
 import com.koomoni.ws.ArchivoMODService
+
 import grails.converters.JSON
 import wslite.soap.SOAPClient
 import championweb.OrdenCompra
@@ -25,7 +28,7 @@ class OrdenController {
 	}
 	
 	def list(){
-		def ordenCompraInstanceList = OrdenCompra.list();		
+		def ordenCompraInstanceList = OrdenCompra.list();
 		[ordenCompraInstanceList:ordenCompraInstanceList]
 	}
 	
@@ -60,9 +63,7 @@ class OrdenController {
 					cotizacionEnviadaInstance.partida.each {
 						partidaOrden = new PartidaOrden()
 						partidaOrden.orden = ordenInstance
-						//TODO: Desde aqui se debe igualar el valor de cantidad con el valor de la solicitud ya despues el usuario en orden podrá cambiarlo
-						//Al hacerlo aqui quitarlo del metodo edit
-						partidaOrden.cantidad = it.cantidad
+						partidaOrden.cantidad = 1
 						partidaOrden.almacen = ordenInstance.almacen
 						partidaOrden.cveProducto = it.cveProducto
 						partidaOrden.descProducto = it.descProducto
@@ -101,7 +102,7 @@ class OrdenController {
 		Float subtotal=0
 		def partidasid=[]	 		
 		ordenInstance.partidas.each {partida->
-			subtotal+= (partida.costoUnidad*partida.cantidad)-( ((ordenInstance.descuento/100) * (partida.costoUnidad*partida.cantidad)))-(((other/100) * (partida.costoUnidad*partida.cantidad)))+((isr/100)* (partida.cantidad*partida.costoUnidad))+((iva/100)* (partida.cantidad*partida.costoUnidad))
+			subtotal+= (((partida.costoUnidad*partida.cantidad)- partida.descuento)  + (partida.IVA)) - (partida.otros + partida.isrRet + partida.retIVA)
 			partidasid.add(partida.id)
 		}
 		Float total= subtotal- (subtotal*(ordenInstance.descFinal/100))
@@ -109,10 +110,10 @@ class OrdenController {
 		def descuento=ordenInstance.descuento
 		if(descuento && descuento > 0)
 			descuento/=100
-			
+		
 		render view: 'edit', model:[ordenInstance:ordenInstance,datosProveedor:datosProveedor, iva:iva, isr:isr, 
 			descuento:descuento, descFin:ordenInstance.descFinal, other:other, subtotal:subtotal.trunc(2), 
-			total:total.trunc(2), partidasid:partidasid]
+			total:total, partidasid:partidasid]
 	}
 	
 	
@@ -213,7 +214,13 @@ class OrdenController {
 			partidaOrdenInstance.cantidad = params.cantidad?.toFloat()
 			partidaOrdenInstance.descuento = params.descuento?.toFloat()
 			
+			partidaOrdenInstance.otros = params.otros?.toFloat()
+			partidaOrdenInstance.isrRet  = params.isrRet?.toFloat()
+			partidaOrdenInstance.retIVA = params.retIVA?.toFloat()
+			partidaOrdenInstance.IVA = params.IVA?.toFloat()
 			
+			BigDecimal costoUnidad = 0.0
+		
 			if(!partidaOrdenInstance.save(flush:true))
 				log.error("Error al guardar los cambios: ${partidaOrdenInstance.errors}")
 			
@@ -224,8 +231,7 @@ class OrdenController {
 	
 	def crearMOD(params){
 		log.debug params
-		log.debug("Llamando al ws ArchivoMOD Service -- log.debug")
-		log.error("Llamando al ws ArchivoMOD Service -- log.error")
+		log.debug("Llamando al ws ArchivoMOD Service")
 		def respuesta
 		def client = new SOAPClient(grailsApplication.config.ws.mod)
 		log.debug grailsApplication.config.ws.mod
