@@ -63,7 +63,7 @@ class OrdenController {
 					cotizacionEnviadaInstance.partida.each {
 						partidaOrden = new PartidaOrden()
 						partidaOrden.orden = ordenInstance
-						partidaOrden.cantidad = 1
+						partidaOrden.cantidad = it.cantidad
 						partidaOrden.almacen = ordenInstance.almacen
 						partidaOrden.cveProducto = it.cveProducto
 						partidaOrden.descProducto = it.descProducto
