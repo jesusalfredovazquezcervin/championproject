@@ -61,7 +61,7 @@ grails.exceptionresolver.params.exclude = ['password']
 grails.hibernate.cache.queries = true
 
 //correo de envio para el plugin 'mail'
-grails.mail.default.from="solicitudes@ctxmx.com"
+grails.mail.default.from="solicitudes@integron.com.mx"
 
 def log4jConsoleLogLevel = Priority.WARN
 def log4jAppFileLogLevel = Priority.INFO
@@ -97,10 +97,8 @@ environments {
 			mail {
 				host = "smtp.gmail.com"
 				port = 465
-//					username = "gimnasioglobaltraining@gmail.com"
-				username = "jesusalfredovazquezcervin@gmail.com"
-//					password = "pwq92p33_5"
-				password = "mokrfizmvxindbxu"
+				username = "solicitudes@integron.com.mx"
+				password = "1s3CtxMx"
 				props = ["mail.smtp.auth":"true",
 							"mail.smtp.socketFactory.port":"465",
 							"mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
@@ -203,10 +201,10 @@ environments {
 //			}
 			
 			mail {
-				host = "smtp.mail.yahoo.com"
+				host = "smtp.gmail.com"
 				port = 465
-				username = "solicitudes@ctxmx.com"
-				password = "s0l1c1tud3s"
+				username = "solicitudes@integron.com.mx"
+				password = "1s3CtxMx"
 				props = ["mail.smtp.auth":"true",
 					   "mail.smtp.socketFactory.port":"465",
 					   "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
