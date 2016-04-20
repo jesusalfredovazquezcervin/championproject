@@ -139,7 +139,9 @@ environments {
 //			proveedor = 'http://localhost:8081/ChampionWS/Proveedor?wsdl'
 		}
 		
-		
+		sec.sslTrustStoreFile =  '/Users/Alfredo/Documents/ws champs/clientchampion.jks' //ruta lap alfredo
+		sec.sslTrustStorePassword = 'wUg9FhnWLwsWa38'
+		sec.server = '201.128.224.11'
     }
     production {
         grails.logging.jul.usebridge = true
@@ -229,6 +231,9 @@ environments {
 			mod = 'https://201.128.224.11:8080/ChampionWS/MOD?wsdl'
 		}
 		
+		sec.sslTrustStoreFile =  '/home/ubuntu/champion_files/certificados/clientchampion.jks' //ruta prod /home/ubuntu/champion_files/certificados
+		sec.sslTrustStorePassword = 'wUg9FhnWLwsWa38'
+		sec.server = '201.128.224.11'
 		
     }
 }
@@ -277,10 +282,10 @@ log4j = {
  
 
 //sec.sslTrustStoreFile =  '/var/lib/tomcat7/webapps/certificados/clientchampion.jks' //ruta prod /home/ubuntu/champion_files/certificados
-//sec.sslTrustStoreFile =  '/home/ubuntu/champion_files/certificados/clientchampion.jks' //ruta prod /home/ubuntu/champion_files/certificados
-sec.sslTrustStoreFile =  '/Users/Alfredo/Documents/ws champs/clientchampion.jks' //ruta lap alfredo
-sec.sslTrustStorePassword = 'wUg9FhnWLwsWa38'
-sec.server = '201.128.224.11'
+
+//sec.sslTrustStoreFile =  '/Users/Alfredo/Documents/ws champs/clientchampion.jks' //ruta lap alfredo
+//sec.sslTrustStorePassword = 'wUg9FhnWLwsWa38'
+//sec.server = '201.128.224.11'
 
 
 // Added by the Spring Security Core plugin:
