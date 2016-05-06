@@ -103,8 +103,8 @@ class SolicitudController {
 		solicitudInstance.razon = razones
 		
 		//Fechas
-		solicitudInstance.fechaCreacionSolicitud = new Date()
-		solicitudInstance.fechaAreaAdm = new Date() //TODO: ESTA ES HASTA EL CAMBIO DE ESTATUS
+		//solicitudInstance.fechaCreacionSolicitud = new Date()
+		//solicitudInstance.fechaAreaAdm = new Date() //TODO: ESTA ES HASTA EL CAMBIO DE ESTATUS
 		
 		solicitudInstance.tipoSolicitud = 1//params.tipoSolicitud
 		solicitudInstance.estatus = 1//params.estatusSolicitud

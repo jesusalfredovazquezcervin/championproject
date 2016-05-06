@@ -8,7 +8,7 @@ class Solicitud {
 	Date fechaAreaAdm
 	Date fechaCreacionSolicitud
 	Integer tipoSolicitud //1 extranjera 
-	Integer estatus //1 abierta, 2 en revisi—n, 3 en cotizacion, 4 cancelada
+	Integer estatus //1 abierta, 2 en revisiï¿½n, 3 en cotizacion, 4 cancelada
 	
 	Long contPorZona = 0 //Valor del Contador por zona para que sea el folio de la solicitud
 	User usuarioCreo 
@@ -58,5 +58,8 @@ class Solicitud {
 		pathDesin comment:"Desinstalacion"
 		pathEval comment:"Evaluacion"
 		pathIny comment:"Inyeccion de prod. quimico"
+		fechaAreaAdm defaultValue: "now()"
+		fechaCreacionSolicitud defaultValue: "now()"
 	}
+	
 }
