@@ -54,11 +54,15 @@
 	}
 
 	function setDescuento(){
-		console.debug('desc-->  ' + $('#desc').val());
+		//console.debug('desc-->  ' + $('#desc').val());
 		var desc= $('#desc').val();
 		$("#descuentoHeader").text(desc);
-		 
-		}
+		var idArray = $("#partidasid").val().replace('[','').replace(']','').replace(' ','').split(',');
+		var arrayLength = idArray.length;
+		for (var i = 0; i < arrayLength; i++) {
+			document.getElementById("descuento"+idArray[i]).value=desc;		    
+		}	 
+	}
 	function setDescuentoFinan(){
 		console.debug('desc-->  ' + $('#descFinal').val());
 		var desc= $('#descFinal').val();
