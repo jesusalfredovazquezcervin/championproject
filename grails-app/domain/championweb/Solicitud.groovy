@@ -58,8 +58,6 @@ class Solicitud {
 		pathDesin comment:"Desinstalacion"
 		pathEval comment:"Evaluacion"
 		pathIny comment:"Inyeccion de prod. quimico"
-		fechaAreaAdm defaultValue: "now()"
-		fechaCreacionSolicitud defaultValue: "now()"
 	}
 	
 }
