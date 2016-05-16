@@ -10,7 +10,8 @@
 					<g:message code="almacen.label" default="Almacén" />
 					<span class="required-indicator">*</span>
 				</label>
-				<g:select id="claveAlmacen" onchange="getTexto();" name="claveAlmacen" style="width:200px;height:30px;" from="${resList}" optionKey="id" optionValue="descripcion" required="" class="many-to-one" noSelection="['':'-Seleccione el almacén-']"/>
+				<g:select id="claveAlmacen" onchange="getTexto();" name="claveAlmacen" style="width:200px;height:30px;" from="${resList}" optionKey="id" optionValue="descripcion" required="" class="many-to-one" noSelection="['':'-Seleccione el almacén-']"
+data-live-search="true" style="width:320px; padding-bottom:10px;"/>
 				<g:field type="hidden" name="descripcion" id="descripcion"/>
 				<g:field type="hidden" name="almacenUpdate" id="almacenUpdate"/>
 		</div>
@@ -19,7 +20,7 @@
 					<g:message code="almacen.zona.label" default="Zona" />
 					<span class="required-indicator">*</span>
 				</label>
-				<g:select id="zona" name="zona" style="width:200px;height:30px;" from="${Zona.list()}" optionKey="id" optionValue="nombreZona" required=""  class="many-to-one" noSelection="['':'-Seleccione la Zona-']" />
+				<g:select id="zona" name="zona" style="width:200px;height:30px;" from="${Zona.list()}" optionKey="id" optionValue="nombreZona" required=""  class="many-to-one" noSelection="['':'-Seleccione la Zona-']" data-live-search="true" style="width:320px; padding-bottom:10px;"/>
 		</div>
 	</td>
     
@@ -29,4 +30,9 @@
   </tr>
   
 </table>
-		
+	<script type="text/javascript" src="${resource(dir: 'js', file: 'select2.min.js')}"></script>
+		<link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'select2.css')}">
+		<script type="text/javascript">
+		$("#claveAlmacen").select2();
+		$("#zona").select2();
+	</script>
