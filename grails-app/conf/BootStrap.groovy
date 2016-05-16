@@ -23,6 +23,7 @@ class BootStrap {
 	def grailsApplication
 	
     def init = { servletContext ->
+		TimeZone.setDefault(TimeZone.getTimeZone("America/Mexico_City"))
 		
 		def springContext = WebApplicationContextUtils.getWebApplicationContext( servletContext )
 		
