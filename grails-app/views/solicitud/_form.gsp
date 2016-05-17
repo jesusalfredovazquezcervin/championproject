@@ -15,9 +15,8 @@
 			<span class="required-indicator">*</span>
 		</label>
 		<!--g:select id="contrato" name="contrato.id" from="${championweb.Contrato.list()}" optionKey="id" required="" value="${solicitudInstance?.contrato?.id}" class="many-to-one"/-->
-		<g:field type="hidden"  name="contrato_id" />
-		<g:field type="text" class="many-to-one" required="" name="contrato_nombre" disabled="" style="margin-left:77px;" />
-		<button id="search-contrato" style="font-size: 14px; margin-bottom: 4px;">Contrato</button>
+		<g:select id="contrato_id" name="contrato_id" from="${championweb.Contrato.list()}" optionKey="id" optionValue="numContrato" required=""  class="many-to-one" noSelection="['':'-Seleccione-']" data-live-search="true" style="width:270px; padding-bottom:10px;margin-left:80px;"/>
+		
 			
 	</div>
 	
@@ -37,9 +36,10 @@
 			<span class="required-indicator">*</span>
 		</label>
 		<!--g:select id="lugarEntrega" name="lugarEntrega.id" from="${championweb.Almacen.list()}" optionKey="id" required="" value="${solicitudInstance?.lugarEntrega?.id}" class="many-to-one"/-->
-		<g:field type="hidden" name="lugarentrega_id" />
-		<g:field type="text" class="many-to-one" required="" name="lugarentrega_nombre" disabled="" style="margin-left:48px;" />
-		<button id="search-almacen" style="font-size: 14px; margin-bottom: 4px;">Almacen</button>
+		<g:select id="lugarentrega_id" name="lugarentrega_id" from="${championweb.Almacen.list()}" optionKey="id" optionValue="nombreCompleto" required=""  class="many-to-one" noSelection="['':'-Seleccione-']" data-live-search="true" style="width:250px; padding-bottom:10px;margin-left:75px;"/>
+		
+		
+	
 	</div>
 	
 	<div class=" ${hasErrors(bean: solicitudInstance, field: 'recibe', 'error')} required">
@@ -47,10 +47,10 @@
 			<g:message code="solicitud.recibe.label" default="Recibe" />
 			<span class="required-indicator">*</span>
 		</label>
-		<!--g:select id="recibe" name="recibe.id" from="${championweb.Receptor.list()}" optionKey="id" required="" value="${solicitudInstance?.recibe?.id}" class="many-to-one"/-->
-		<g:field type="hidden" name="receptor_id" />
-		<g:field type="text" class="many-to-one" required="" name="receptor_nombre" disabled=""/>
-		<button id="search-receptor" style="font-size: 14px; margin-bottom: 4px;">Recibe</button>
+		
+		<g:select id="receptor_id" name="receptor_id" from="${championweb.Receptor.list()}" optionKey="id" optionValue="nombreCompleto" required=""  class="many-to-one" noSelection="['':'-Seleccione-']" data-live-search="true" style="width:270px; padding-bottom:10px;margin-left:80px;"/>
+		
+		
 	</div>
 	<br><br>
 
@@ -93,4 +93,13 @@
 <!--g:select name="estatusSolicitud" from=""/-->
 <br>
 
+
+<script type="text/javascript" src="${resource(dir: 'js', file: 'select2.min.js')}"></script>
+		<link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'select2.css')}">
+		<script type="text/javascript">
+		$("#receptor_id").select2();
+		$("#lugarentrega_id").select2();
+		$("#contrato_id").select2();
+		
+	</script>
 
