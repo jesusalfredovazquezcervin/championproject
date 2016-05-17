@@ -6,6 +6,9 @@ class Almacen {
 	Integer claveAlmacen
 	static belongsTo = [zona:Zona] 
 	
+	String getNombreCompleto(){ claveAlmacen+" - "+ descripcion }
+	static transients = ['nombreCompleto']
+	
     static constraints = {
 		descripcion(nullable: false )
 		claveAlmacen(unique:true)
