@@ -11,7 +11,7 @@
 					<span class="required-indicator">*</span>
 				</label>
 				<g:select id="claveAlmacen" onchange="getTexto();" name="claveAlmacen" style="width:200px;height:30px;" from="${resList}" optionKey="id" optionValue="descripcion" required="" class="many-to-one" noSelection="['':'-Seleccione el almacén-']"
-data-live-search="true" style="width:320px; padding-bottom:10px;"/>
+data-live-search="true" style="width:520px; padding-bottom:10px;"/>
 				<g:field type="hidden" name="descripcion" id="descripcion"/>
 				<g:field type="hidden" name="almacenUpdate" id="almacenUpdate"/>
 		</div>
