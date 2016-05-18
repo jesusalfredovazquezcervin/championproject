@@ -85,7 +85,7 @@ class AlmacenService{
 				ident = it.id
 				desc = it.descripcion
 				almacen.setId(ident.toInteger())
-				almacen.setDescripcion(desc.toString())
+				almacen.setDescripcion(ident.toString() + " - " + desc.toString())
 				almacenesList.add(almacen)
 				
 			}
@@ -103,7 +103,7 @@ class AlmacenService{
 				ident = it.id
 				desc = it.descripcion
 				almacen.setId(ident.toInteger())
-				almacen.setDescripcion(desc.toString())
+				almacen.setDescripcion( ident.toString() + " - " + desc.toString())
 				almacenesList.add(almacen)
 					
 			}
