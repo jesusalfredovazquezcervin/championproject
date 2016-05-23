@@ -242,14 +242,12 @@
 		});
 	}
 		 
-	function listProyectos(){
+	function listProyectos(id){
 			 $.ajax({
 			 	type: 'POST',
 			 	url: ajaxProyectos,
 			 	dataType: 'json',
-			 	
-			 	data: $('#searchProyectos').serialize(),
-				
+			 	data: "pbusqueda=" + id,
 				success: function(data) {
 				
 					var resultados = 1 * data.result.proyectoInstanceTotal;
@@ -449,11 +447,11 @@
 	<!-- PROYECTOS -->
 	<div id="dialog-proyectos" title="${message(code: 'solicitud.proyecto.modal.header', default: 'Proyectos')}">
 	 	<br>
-		<form action="#" onsubmit="listProyectos(); return false;" name="searchProyectos" id="searchProyectos">
-			<div align="center">
-				<input name="pbusqueda" type="text" required="" placeholder="Nombre de proyecto" size="30">
-			</div>
-		</form>
+	 	<div align="center">
+	 	
+	 	<g:select id="pbusqueda" name="pbusqueda" style="width:200px;height:30px;" from="${championweb.Proyecto.list()}" optionKey="id" optionValue="nombre" required="" class="many-to-one" noSelection="['':'-Seleccione-']"
+data-live-search="true" style="width:320px; padding-bottom:10px; "  onChange = "listProyectos(this.value)" />
+</div>
 		
 		<br>
 		
