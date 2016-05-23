@@ -50,6 +50,8 @@
 						<g:sortableColumn property="fechaInicio" title="${message(code: 'contrato.fechaInicio.label', default: 'Fecha Inicio')}" />
 					
 						<g:sortableColumn property="fechaFin" title="${message(code: 'contrato.fechaFin.label', default: 'Fecha Fin')}" />
+						
+						<g:sortableColumn property="fechaExtendida" title="${message(code: 'contrato.fechaExtendida.label', default: 'Fecha Extendida')}" />
 					
 					</tr>
 				</thead>
@@ -62,8 +64,10 @@
 						<td>${fieldValue(bean: contratoInstance, field: "nombreCliente")}</td>
 					
 						<td><g:formatDate format='dd /MM /yyyy' date="${contratoInstance.fechaInicio}" /></td>
-					
-						<td class="${new Date() > contratoInstance.fechaFin?'caduc':''}"><g:formatDate format='dd /MM /yyyy' date="${contratoInstance.fechaFin}" /></td>
+						
+						<td class="${new Date() > (contratoInstance.extension? new Date():contratoInstance.fechaFin) ? 'caduc':''}"><g:formatDate format='dd /MM /yyyy' date="${contratoInstance.fechaFin}" /></td>
+						
+						<td class="${new Date() >  (contratoInstance.extension? contratoInstance.extension.sort{it.id}.last().fechaFinal:null)?'caduc':''}"><g:formatDate format='dd /MM /yyyy' date="${contratoInstance.extension? contratoInstance.extension.sort{it.id}.last().fechaFinal :null}" /></td>
 					
 					</tr>
 				</g:each>
