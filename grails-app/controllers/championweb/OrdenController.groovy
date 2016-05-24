@@ -108,7 +108,7 @@ class OrdenController {
 			def otros=(partida.otros/100) * costo;
 			def retiva=(partida.retIVA/100)  * costo;
 			def desc =(partida.descuento/100) * costo;
-			subtotal+= (costo-desc)  + ivalinea - (otros + retisr + retiva);
+			subtotal+= (costo-desc)  + ivalinea + otros + retisr + retiva;
 			partidasid.add(partida.id)
 		}
 		Float total= subtotal- (subtotal*(ordenInstance.descFinal/100))
