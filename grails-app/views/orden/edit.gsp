@@ -78,7 +78,29 @@ var consultaProveedor  = "${createLink(controller:'orden', action:'consultaProve
 					params:'\'porden=\'+parametro',
 					update:'mensaje'
 				)}
-		}
+		};
+
+
+	
+	$(function(){
+		$( "#dialog-resumen" ).dialog({
+			  autoOpen: false,
+		    modal: true,
+		    height: 550,
+		    width: 650,
+		    stack: false,
+		    buttons: {
+		      Aceptar: function() {
+		        $( this ).dialog("close");
+		      }
+		    }
+		});
+
+
+
+				  
+	});
+
 	
 </script>
 
@@ -100,6 +122,7 @@ var consultaProveedor  = "${createLink(controller:'orden', action:'consultaProve
 		<g:render template="datos_generales"/>
 		<div id="listado-partidas">
 			<g:render template="partidas"></g:render>
+			<g:render template="resumen"/>
 		</div>
   </div>
   
