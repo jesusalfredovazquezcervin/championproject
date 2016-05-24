@@ -90,6 +90,8 @@
 				<th>Total</th>
 				<th>&nbsp;</th>
 				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -107,11 +109,13 @@
 					<td><g:field type="text"  id="retiva${partida.id}" name="retiva${partida.id}" onKeyUp="recalcularTotal(${partida.id})" value="${partida.retIVA}" size="5"/></td>
 					 						
 					<td><label id="total_partida${partida.id}">
-					<g:formatNumber 
-					number="${(((partida.costoUnidad*partida.cantidad)- ((partida.descuento/100) * (partida.costoUnidad*partida.cantidad)) )  +((partida.IVA/100) * (partida.costoUnidad*partida.cantidad) ) ) - ( ((partida.otros/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.isrRet/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.retIVA/100)*(partida.costoUnidad*partida.cantidad) ))}"
+					<g:formatNumber
+number="${((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100))) + ((partida.IVA/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.otros/100) *((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.retIVA/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.isrRet/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) }"					 
+					
 			type="number"  /></label></td>
-					<td><span onclick='recalcularTotal(${partida.id});' class='ui-icon ui-icon-plus'></span></td>
-					<td><span onclick='deletePartidaOrden(${partida.id});' class='ui-icon ui-icon-closethick'></span></td>
+					<td><span onclick='verResumen(${partida.id});' class='ui-icon ui-icon-plus'></span></td>
+					<td><span onclick='deletePartidaOrden(${partida.id});' class='ui-icon ui-icon-closethick'></span></td>			
+<!-- number="${(((partida.costoUnidad*partida.cantidad)- ((partida.descuento/100) * (partida.costoUnidad*partida.cantidad)) )  +((partida.IVA/100) * (partida.costoUnidad*partida.cantidad) ) ) + ( ((partida.otros/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.isrRet/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.retIVA/100)*(partida.costoUnidad*partida.cantidad) ))}" -->					
 					
 				</tr>
 			</g:each>
@@ -146,6 +150,7 @@
 
 					
 <script>
+
 function deletePartidaOrden(idPartida){
 	${remoteFunction(action:'deletePartida', 
 		controller:'orden',
@@ -153,7 +158,10 @@ function deletePartidaOrden(idPartida){
 		update:'listado-partidas'
 	)}
 }
-
+function verResumen(id){
+	recalcularTotal(id);
+	$( "#dialog-resumen" ).dialog("open");
+}
 function recalcularTotal(id){
 
 	var descuento = $("#desc").val();
@@ -209,12 +217,16 @@ $("#total_partida"+id).text(totalpartidanew.toFixed(2));
 		var ril = parseFloat($("#retiva"+idArray[i]).val());
 		
 		var cst = lc * lq;
+		var IVAL = (li/100) * ((cst- ((ld/100) * (cst))));
+		var OTROSL=(lo/100) * ((cst- ((ld/100) * (cst))));
+		var RETISRL=(rsl/100) * ((cst- ((ld/100) * (cst))));
+		var RETIVAL=(ril/100) * ((cst- ((ld/100) * (cst))));
 		
-		var totalpartidanew=((cst- ((ld/100) * (cst)))  +((li/100) * (cst) ) ) - ( ((lo/100)*(cst) ) + ((rsl/100)*(cst) ) + ((ril/100)*(cst) ));
-		
+		var totalpartidanew=((cst- ((ld/100) * (cst)))  + IVAL ) +  OTROSL + RETISRL + RETIVAL ;
+		console.debug ("costo=" + cst + "   desc="+ ((ld/100) * (cst)) + "  [cst-desc]=" + (cst- ((ld/100) * (cst))) + " iva=" + IVAL + "  otros=" + OTROSL  + "  RETISR="+RETISRL + " RETIVA" + RETIVAL);
 		 
 
-	$("#total_partida"+idArray[i]).text(totalpartidanew.toFixed(2));
+	$("#total_partida"+idArray[i]).text(totalpartidanew.toFixed(6));
 
 	
 	 console.debug (parseFloat($("#total_partida"+idArray[i]).text()));
@@ -224,18 +236,60 @@ $("#total_partida"+id).text(totalpartidanew.toFixed(2));
 	}
 
 	
-	$("#subt").text(nuevosubtotal.toFixed(2));
+	$("#subt").text(nuevosubtotal.toFixed(6));
 	//console.debug("nuevosub->" + nuevosubtotal);
 	//Calculamos el desc para el nuevo subtotal
 	var nuevoDescuento = nuevosubtotal * (descFin/100)
-	$("#descuentoFinan").text(nuevoDescuento.toFixed(2)); 
+	$("#descuentoFinan").text(nuevoDescuento.toFixed(6)); 
 	//console.debug("nuevodesc->" + nuevoDescuento);
 
 	//Calculamos el nuevo total
 	var nuevoTotal= nuevosubtotal-nuevoDescuento;
-	$("#granTotal").text(nuevoTotal.toFixed(2));
+	$("#granTotal").text(nuevoTotal.toFixed(6));
 	//console.debug("nuevoTotal->" + nuevoTotal);
 		
-	
+
+
+
+	//Llenamos la pantalla de resumen
+	$("#lblCantidad").text(cantidadlinea);
+	$("#lblCosto").text(costolinea);
+
+	var lblst1 = (cantidadlinea * costolinea).toFixed(6);
+	$("#lblst1").text(lblst1);
+	$("#lblDescuento").text(descuentolinea + "%");
+
+	var lblParcialDesc = ((descuentolinea/100) * (cantidadlinea*costolinea)).toFixed(6) ;
+	$("#lblParcialDesc").text(lblParcialDesc);
+
+	var lblst2 = lblst1 - lblParcialDesc;
+	$("#lblst2").text(lblst2);
+
+
+	$("#lblIVA").text(ivalinea + "%");
+	var lblParcialIVA = lblst2 * (ivalinea/100); 
+	$("#lblParcialIVA").text(lblParcialIVA);
+	var lblst3 = lblst2 + lblParcialIVA;
+	$("#lblst3").text(lblst3);
+
+	$("#lblOtros").text(otroslinea + "%");
+	var lblParcialOtros = lblst2 * (otroslinea/100); 
+	$("#lblParcialOtros").text(lblParcialOtros);
+	var lblst4 = lblst3 + lblParcialOtros;
+	$("#lblst4").text(lblst4);
+
+
+	$("#lblRetISR").text(retisrlinea + "%");
+	var lblParcialRetISR = lblst2 * (retisrlinea/100); 
+	$("#lblParcialRetISR").text(lblParcialRetISR);
+	var lblst5 = lblst4 + lblParcialRetISR;
+	$("#lblst5").text(lblst5);
+
+	$("#lblRetIVA").text(retivalinea + "%");
+	var lblParcialRetIVA = lblst2 * (retivalinea/100); 
+	$("#lblParcialRetIVA").text(lblParcialRetIVA);
+	var lblst6 = lblst5 + lblParcialRetIVA;
+	$("#lblst6").text(lblst6);
+
 }
 </script>
