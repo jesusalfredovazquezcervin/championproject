@@ -59,7 +59,22 @@
 					<td><label id ="lblst2"></label></td>
 					<td></td><td></td><td></td><td></td><td></td>					
 				</tr>
-				<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>		
+				<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+				<tr>		
+					<td><label> - Desc Financiero</label></td>
+					<td></td>
+					<td><label id ="lblDescFinanciero"></label></td>
+					<td></td>
+					<td><label id ="lblParcialDescFinanciero"></label></td>
+					<td></td><td></td><td></td>					
+				</tr>
+				<tr>		
+					<td><label>&nbsp;</label></td>
+					<td></td>
+					<td><label id ="lblst7"></label></td>
+					<td></td><td></td><td></td><td></td><td></td>					
+				</tr>
+				<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 				<tr>		
 					<td><label> + IVA</label></td>
 					<td></td>
@@ -118,7 +133,7 @@
 					<td></td><td></td><td></td>					
 				</tr>					
 				<tr>		
-					<td><label>&nbsp;</label></td>
+					<td><label>Total linea</label></td>
 					<td></td>
 					<td><label id ="lblst6"></label></td>
 					<td></td><td></td><td></td><td></td><td></td>				

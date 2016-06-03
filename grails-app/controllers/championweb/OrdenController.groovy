@@ -102,16 +102,23 @@ class OrdenController {
 		Float subtotal=0
 		def partidasid=[]	 		
 		ordenInstance.partidas.each {partida->
+			
+			//var IVAL = (cst - (cst * (ld/100)) - (cst * (descuento/100))) * (li/100);
+			//var totalpartidanew=(cst - (cst * (ld/100)) - (cst * (descuento/100)))  + IVAL + OTROSL + RETISRL + RETIVAL ;
+			 
+			
 			def costo = ((partida.costoUnidad * partida.cantidad));
-			def ivalinea=(partida.IVA/100) * costo;
-			def retisr=(partida.isrRet/100) * costo;
-			def otros=(partida.otros/100) * costo;
-			def retiva=(partida.retIVA/100)  * costo;
-			def desc =(partida.descuento/100) * costo;
-			subtotal+= (costo-desc)  + ivalinea + otros + retisr + retiva;
+			//def ivalinea=   (partida.IVA/100) * costo;
+			def ivalinea=(costo - (costo * (partida.descuento/100)) - (costo * (ordenInstance.descFinal/100))) * (partida.IVA/100);	
+			def retisr=(costo - (costo * (partida.descuento/100)) - (costo * (ordenInstance.descFinal/100))) * (partida.isrRet/100);
+			def otros=(costo - (costo * (partida.descuento/100)) - (costo * (ordenInstance.descFinal/100))) * (partida.otros/100);
+			def retiva=(costo - (costo * (partida.descuento/100)) - (costo * (ordenInstance.descFinal/100))) * (partida.retIVA/100);
+			
+			subtotal+=  (costo- (costo * (partida.descuento/100)) - (costo * (ordenInstance.descFinal/100)))  + ivalinea + otros + retisr + retiva;
 			partidasid.add(partida.id)
 		}
-		Float total= subtotal- (subtotal*(ordenInstance.descFinal/100))
+		//Float total= subtotal- (subtotal*(ordenInstance.descFinal/100))
+		Float total= subtotal;
 		
 		def descuento=ordenInstance.descuento
 		if(descuento && descuento > 0)

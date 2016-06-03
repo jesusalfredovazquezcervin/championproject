@@ -110,23 +110,22 @@
 					 						
 					<td><label id="total_partida${partida.id}">
 					<g:formatNumber
-number="${((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100))) + ((partida.IVA/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.otros/100) *((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.retIVA/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) + ((partida.isrRet/100) * ((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.cantidad) * (partida.descuento/100)))) }"					 
+number="${((partida.costoUnidad * partida.cantidad)- ((partida.costoUnidad * partida.cantidad) * (partida.descuento/100)) - ((partida.costoUnidad * partida.cantidad) * (ordenInstance.descFinal/100)))  + (((partida.costoUnidad * partida.cantidad) - ((partida.costoUnidad * partida.cantidad) * (partida.descuento/100)) - ((partida.costoUnidad * partida.cantidad) * (ordenInstance.descFinal/100))) * (partida.IVA/100)) + (((partida.costoUnidad * partida.cantidad) - ((partida.costoUnidad * partida.cantidad) * (partida.descuento/100)) - ((partida.costoUnidad * partida.cantidad) * (ordenInstance.descFinal/100))) * (partida.otros/100)) + (((partida.costoUnidad * partida.cantidad) - ((partida.costoUnidad * partida.cantidad) * (partida.descuento/100)) - ((partida.costoUnidad * partida.cantidad) * (ordenInstance.descFinal/100))) * (partida.isrRet/100)) + (((partida.costoUnidad * partida.cantidad) - ((partida.costoUnidad * partida.cantidad) * (partida.descuento/100)) - ((partida.costoUnidad * partida.cantidad) * (ordenInstance.descFinal/100))) * (partida.retIVA/100))}"					 
 					
 			type="number"  /></label></td>
 					<td><span onclick='verResumen(${partida.id});' class='ui-icon ui-icon-plus'></span></td>
 					<td><span onclick='deletePartidaOrden(${partida.id});' class='ui-icon ui-icon-closethick'></span></td>			
-<!-- number="${(((partida.costoUnidad*partida.cantidad)- ((partida.descuento/100) * (partida.costoUnidad*partida.cantidad)) )  +((partida.IVA/100) * (partida.costoUnidad*partida.cantidad) ) ) + ( ((partida.otros/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.isrRet/100)*(partida.costoUnidad*partida.cantidad) ) + ((partida.retIVA/100)*(partida.costoUnidad*partida.cantidad) ))}" -->					
 					
 				</tr>
 			</g:each>
 				<tr>
 					<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>					
-					<td>Subtotal</td>
+					<td>Total</td>
 					<td>
 						<label id="subt"><g:formatNumber number="${subtotal}" type="number" /></label>
 					</td>
 				</tr>
-				
+				<!--  
 				<tr>
 					<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>					<td></td>
 					<td>- Desc Fin <label id="descuentoFinanHeader"><g:formatNumber number="${descFin}" type="number" /></label>%
@@ -135,6 +134,7 @@ number="${((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.
 						<label id="descuentoFinan"><g:formatNumber number="${(subtotal*(descFin/100)).trunc(2)}" type="number" /></label>
 					</td>
 				</tr>
+				
 				<tr>
 					<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>					<td></td>
 					<td>Total</td>
@@ -142,7 +142,7 @@ number="${((partida.costoUnidad*partida.cantidad)-((partida.costoUnidad*partida.
 						<label id="granTotal"><g:formatNumber number="${total}" type="number" /></label>
 					</td>
 				</tr>
-				
+				-->
 		</tbody>
 	</table>
 </fieldset>
@@ -201,12 +201,6 @@ $("#total_partida"+id).text(totalpartidanew.toFixed(2));
 	var nuevosubtotal=0;
 	
 	for (var i = 0; i < arrayLength; i++) {
-		var iva=(ivalinea/100) * (  ($("#costounit"+idArray[i]).val() * $("#cantidad_"+idArray[i]).val())  );
-		var retisr=(retisrlinea/100) * (  ($("#costounit"+idArray[i]).val() * $("#cantidad_"+idArray[i]).val())   );
-		var otros=(otroslinea/100) * (  ($("#costounit"+idArray[i]).val() * $("#cantidad_"+idArray[i]).val())   );
-		var retiva=(retivalinea/100) * (  ($("#costounit"+idArray[i]).val() * $("#cantidad_"+idArray[i]).val())  );
-		var desc =(descuentolinea/100) * (  ($("#costounit"+idArray[i]).val() * $("#cantidad_"+idArray[i]).val())  );
-
 		var lq = $("#cantidad_"+idArray[i]).val();
 		var lc = $("#costounit"+idArray[i]).val();	
 		var ld =$("#descuento"+idArray[i]).val();
@@ -217,79 +211,84 @@ $("#total_partida"+id).text(totalpartidanew.toFixed(2));
 		var ril = parseFloat($("#retiva"+idArray[i]).val());
 		
 		var cst = lc * lq;
-		var IVAL = (li/100) * ((cst- ((ld/100) * (cst))));
-		var OTROSL=(lo/100) * ((cst- ((ld/100) * (cst))));
-		var RETISRL=(rsl/100) * ((cst- ((ld/100) * (cst))));
-		var RETIVAL=(ril/100) * ((cst- ((ld/100) * (cst))));
+		var IVAL = (cst - (cst * (ld/100)) - (cst * (descFin/100))) * (li/100);
+		//var OTROSL=(lo/100) * ((cst- ((ld/100) * (cst))));
+		var OTROSL=(cst - (cst * (ld/100)) - (cst * (descFin/100))) * (lo/100);
+		//var RETISRL=(rsl/100) * ((cst- ((ld/100) * (cst))));
+		var RETISRL=(cst - (cst * (ld/100)) - (cst * (descFin/100))) * (rsl/100);
+		//var RETIVAL=(ril/100) * ((cst- ((ld/100) * (cst))));
+		var RETIVAL=(cst - (cst * (ld/100)) - (cst * (descFin/100))) * (ril/100);
 		
-		var totalpartidanew=((cst- ((ld/100) * (cst)))  + IVAL ) +  OTROSL + RETISRL + RETIVAL ;
-		console.debug ("costo=" + cst + "   desc="+ ((ld/100) * (cst)) + "  [cst-desc]=" + (cst- ((ld/100) * (cst))) + " iva=" + IVAL + "  otros=" + OTROSL  + "  RETISR="+RETISRL + " RETIVA" + RETIVAL);
+		//var totalpartidanew=((cst- ((ld/100) * (cst)))  + IVAL ) +  OTROSL + RETISRL + RETIVAL ;
+		var totalpartidanew=(cst - (cst * (ld/100)) - (cst * (descFin/100)))  + IVAL + OTROSL + RETISRL + RETIVAL ; 
 		 
-
-	$("#total_partida"+idArray[i]).text(totalpartidanew.toFixed(6));
-
-	
-	 console.debug (parseFloat($("#total_partida"+idArray[i]).text()));
-	    nuevosubtotal+=totalpartidanew;
-	     
-	    
+		$("#total_partida"+idArray[i]).text(totalpartidanew.toFixed(6));
+	 	//console.debug (parseFloat($("#total_partida"+idArray[i]).text()));
+	    nuevosubtotal+=totalpartidanew;    	    
 	}
 
 	
 	$("#subt").text(nuevosubtotal.toFixed(6));
-	//console.debug("nuevosub->" + nuevosubtotal);
+	
 	//Calculamos el desc para el nuevo subtotal
-	var nuevoDescuento = nuevosubtotal * (descFin/100)
-	$("#descuentoFinan").text(nuevoDescuento.toFixed(6)); 
-	//console.debug("nuevodesc->" + nuevoDescuento);
-
+	//var nuevoDescuento = nuevosubtotal * (descFin/100)
+	//$("#descuentoFinan").text(nuevoDescuento.toFixed(6)); 
+	
 	//Calculamos el nuevo total
-	var nuevoTotal= nuevosubtotal-nuevoDescuento;
-	$("#granTotal").text(nuevoTotal.toFixed(6));
-	//console.debug("nuevoTotal->" + nuevoTotal);
+	//var nuevoTotal= nuevosubtotal-nuevoDescuento;
+	//$("#granTotal").text(nuevoTotal.toFixed(6));
+	
 		
 
 
 
 	//Llenamos la pantalla de resumen
 	$("#lblCantidad").text(cantidadlinea);
-	$("#lblCosto").text(costolinea);
+	$("#lblCosto").text("$ " + costolinea);
 
-	var lblst1 = (cantidadlinea * costolinea).toFixed(6);
-	$("#lblst1").text(lblst1);
+	var lblst1 = (cantidadlinea * costolinea);
+	$("#lblst1").text("$ " + lblst1.toFixed(6));
 	$("#lblDescuento").text(descuentolinea + "%");
 
-	var lblParcialDesc = ((descuentolinea/100) * (cantidadlinea*costolinea)).toFixed(6) ;
-	$("#lblParcialDesc").text(lblParcialDesc);
+	var lblParcialDesc = ((descuentolinea/100) * (cantidadlinea*costolinea));
+	$("#lblParcialDesc").text("$ " + lblParcialDesc.toFixed(6));
 
-	var lblst2 = lblst1 - lblParcialDesc;
-	$("#lblst2").text(lblst2);
+	var lblst2 = (lblst1 - lblParcialDesc);
+	$("#lblst2").text("$ " + lblst2.toFixed(6));
+
+	$("#lblDescFinanciero").text(descFin + "%");
+	var lblParcialDescFinanciero = ((descFin/100) * (cantidadlinea*costolinea));
+	$("#lblParcialDescFinanciero").text("$ " + lblParcialDescFinanciero.toFixed(6));
+
+	var lblst7 = (lblst2 - lblParcialDescFinanciero);
+	$("#lblst7").text("$ " + lblst7.toFixed(6));
 
 
 	$("#lblIVA").text(ivalinea + "%");
-	var lblParcialIVA = lblst2 * (ivalinea/100); 
-	$("#lblParcialIVA").text(lblParcialIVA);
-	var lblst3 = lblst2 + lblParcialIVA;
-	$("#lblst3").text(lblst3);
+	var lblParcialIVA = (lblst7 * (ivalinea/100));
+	 
+	$("#lblParcialIVA").text("$ " + lblParcialIVA.toFixed(6));
+	var lblst3 = (lblst7 + lblParcialIVA);
+	$("#lblst3").text("$ " + lblst3.toFixed(6));
 
 	$("#lblOtros").text(otroslinea + "%");
-	var lblParcialOtros = lblst2 * (otroslinea/100); 
-	$("#lblParcialOtros").text(lblParcialOtros);
-	var lblst4 = lblst3 + lblParcialOtros;
-	$("#lblst4").text(lblst4);
+	var lblParcialOtros = (lblst7 * (otroslinea/100)); 
+	$("#lblParcialOtros").text("$ " + lblParcialOtros.toFixed(6));
+	var lblst4 = (lblst3 + lblParcialOtros);
+	$("#lblst4").text("$ " + lblst4.toFixed(6));
 
 
 	$("#lblRetISR").text(retisrlinea + "%");
-	var lblParcialRetISR = lblst2 * (retisrlinea/100); 
-	$("#lblParcialRetISR").text(lblParcialRetISR);
-	var lblst5 = lblst4 + lblParcialRetISR;
-	$("#lblst5").text(lblst5);
+	var lblParcialRetISR = (lblst7 * (retisrlinea/100)); 
+	$("#lblParcialRetISR").text("$ " + lblParcialRetISR.toFixed(6));
+	var lblst5 = (lblst4 + lblParcialRetISR);
+	$("#lblst5").text("$ " + lblst5.toFixed(6));
 
 	$("#lblRetIVA").text(retivalinea + "%");
-	var lblParcialRetIVA = lblst2 * (retivalinea/100); 
-	$("#lblParcialRetIVA").text(lblParcialRetIVA);
-	var lblst6 = lblst5 + lblParcialRetIVA;
-	$("#lblst6").text(lblst6);
+	var lblParcialRetIVA = (lblst7 * (retivalinea/100)); 
+	$("#lblParcialRetIVA").text("$ " + lblParcialRetIVA.toFixed(6));
+	var lblst6 = (lblst5 + lblParcialRetIVA);
+	$("#lblst6").text("$ " + lblst6.toFixed(6));
 
 }
 </script>
