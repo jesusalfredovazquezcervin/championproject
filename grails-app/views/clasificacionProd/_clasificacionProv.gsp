@@ -36,6 +36,7 @@ $(function() {
 				<th>Unidad/Medida</th>
 				
 				<th>Estatus</th>
+				<th>Almacen</th>
 				
 				<th>&nbsp;</th>
 			</tr>
@@ -48,6 +49,7 @@ $(function() {
 						<td>${partida.cantidad}</td>
 						<td>${partida.unidad}</td>
 						<td>${partida.estatus?.id==2?'Cotizaci&oacute;n':(partida.estatus?.id==1?'Revisi&oacute;n':(partida.estatus?.id==3?'Cot. enviada':'NA')) }</td>
+						<td>${partida.lugarEntrega.claveAlmacen}-${partida.lugarEntrega.descripcion}</td>
 						<td>
 							<span id="modalProveedores" class='ui-icon ui-icon-circle-minus' 
 								onclick="${remoteFunction(controller:'clasificacionProd',action:'undoClasificacion',

@@ -9,6 +9,7 @@ class SolicitudPartida {
 	String cveProducto
 	String descProducto
 	String unidad = 0
+	Almacen lugarEntrega
 	
 	EstatusPartida estatus
 	

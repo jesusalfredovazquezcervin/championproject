@@ -19,6 +19,8 @@ function saveMe(partida){
 					
 						<th>Unidad/Medida</th>
 						
+						<th>Almacen</th>
+						
 						<th>&nbsp;</th>
 						
 					</tr>
@@ -39,6 +41,7 @@ function saveMe(partida){
                        params: '\'tmpProyectoID=\'+\''+ partidaInstance.tmpProyectoID +'\'+\'&claveProducto=\'+\''+partidaInstance.cveProducto +'\'+\'&cantidad=\'+$(\'#cant_'+partidaInstance.cveProducto+'\').val()'  )}
 						"/></td>
 						<td>${partidaInstance.unidad }</td>
+						<td>${partidaInstance?.lugarEntrega?.claveAlmacen}-${partidaInstance?.lugarEntrega?.descripcion} </td>
 						
 						<td><span onclick="${remoteFunction(action: 'delCantidadTmpPartida', 
 								update:'partidasList',

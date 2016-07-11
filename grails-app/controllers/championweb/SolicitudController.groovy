@@ -245,6 +245,11 @@ class SolicitudController {
 				solicitudPartidaInstance.cveProducto = it.cveProducto
 				solicitudPartidaInstance.descProducto = it.descProducto
 				solicitudPartidaInstance.unidad = it.unidad
+				if (it.lugarEntrega)
+				  solicitudPartidaInstance.lugarEntrega = it.lugarEntrega
+				else
+				  solicitudPartidaInstance.lugarEntrega = almacen
+				
 				
 				if(!solicitudPartidaInstance.save(flush:true)){
 					log.error("NO SE PUDO GUARDAR UNA PARTIDA: "+solicitudPartidaInstance.errors)
@@ -694,6 +699,8 @@ class SolicitudController {
 			partidaInstance.tmpProyectoID = params.tmpProyectoID.toLong()
 			partidaInstance.cveProducto = params.claveProducto
 			partidaInstance.cantidad = 0
+			if (params.lugarentrega_selected_id)
+			   partidaInstance.lugarEntrega = Almacen.findById(params.lugarentrega_selected_id)
 		}
 		
 		def client = new SOAPClient(grailsApplication.config.ws.producto)

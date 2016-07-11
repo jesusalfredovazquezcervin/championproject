@@ -23,6 +23,7 @@
 							<th>Cantidad</th>
 						
 							<th>Unidad/Medida</th>
+							<th>Almacen</th>
 							
 							<th>&nbsp;</th>
 							
@@ -37,6 +38,7 @@
 							<td>${partidaInstance.descProducto }</td>
 							<td>${partidaInstance.cantidad }</td>
 							<td>${partidaInstance.unidad }</td>
+							<td>${partidaInstance.lugarEntrega.claveAlmacen}-${partidaInstance.lugarEntrega.descripcion}</td>
 							
 							<td><span onclick="${remoteFunction(action: 'mostrarClasificacion', 
 									controller:'clasificacionProd',
