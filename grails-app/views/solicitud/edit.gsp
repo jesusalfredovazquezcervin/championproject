@@ -367,7 +367,12 @@
 						<td>${partidaInstance.descProducto }</td>
 						<td>${partidaInstance.cantidad }</td>
 						<td>${partidaInstance.unidad }</td>
-					<td>${partidaInstance.lugarEntrega.claveAlmacen}-${partidaInstance.lugarEntrega.descripcion}</td>
+					<g:if test="${partidaInstance.lugarEntrega}">
+					  <td> ${partidaInstance.lugarEntrega.claveAlmacen}-${partidaInstance.lugarEntrega.descripcion }</td> 
+					</g:if>
+					<g:else>
+					  <td>${partidaInstance.solicitud.lugarEntrega.claveAlmacen}-${partidaInstance.solicitud.lugarEntrega.descripcion } </td>
+					</g:else>
 					</tr>
 					</g:each>
 					

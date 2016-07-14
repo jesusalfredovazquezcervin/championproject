@@ -61,6 +61,7 @@
 				<th>Descripción</th>
 				<th>Cantidad</th>
 				<th>Unidad/Medida</th>
+				<th>Almacen</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -70,6 +71,7 @@
 				<td>${partidaInstance.descProducto }</td>
 				<td>${partidaInstance.cantidad }</td>
 				<td>${partidaInstance.unidad }</td>
+				<td> ${partidaInstance.lugarEntrega.claveAlmacen}-${partidaInstance.lugarEntrega.descripcion }</td>
 			</tr>
 			</g:each>
 		</tbody>

@@ -99,7 +99,7 @@
 				<tr>		
 					<td><g:field type="number" name="cantidad_${partida.id}" onKeyUp="recalcularTotal(${partida.id})" min="1" max="1000" value="${partida.cantidad}"/></td>
 					<td><g:field type="text" name="costounit${partida.id}" size="15" value="${partida.costoUnidad}" onKeyUp="recalcularTotal(${partida.id})"/></td>
-					<td>${partida.almacen?.descripcion}</td>
+					<td>${partida.almacen?.claveAlmacen}-${partida.almacen?.descripcion}</td>
 					<td title="${partida.descProducto}">${partida.cveProducto}</td>
 					<td>${partida.unidad}</td>
 					<td><g:field type="text" id="descuento${partida.id}" name="descuento${partida.id}" onKeyUp="recalcularTotal(${partida.id})" value="${partida.descuento}" size="5"/> </td>
