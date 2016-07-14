@@ -64,7 +64,7 @@ class OrdenController {
 						partidaOrden = new PartidaOrden()
 						partidaOrden.orden = ordenInstance
 						partidaOrden.cantidad = it.cantidad
-						partidaOrden.almacen = ordenInstance.almacen
+						partidaOrden.almacen = it.lugarEntrega
 						partidaOrden.cveProducto = it.cveProducto
 						partidaOrden.descProducto = it.descProducto
 						partidaOrden.unidad = it.unidad
