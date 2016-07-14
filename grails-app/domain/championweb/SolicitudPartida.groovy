@@ -21,6 +21,7 @@ class SolicitudPartida {
 		unidad nullable:false, blank:false
 		idSAE nullable:true, blank:true
 		estatus nullable:true, blank:true
+		lugarEntrega nullable:true, blank:true
     }
 	
 	static mapping = {
